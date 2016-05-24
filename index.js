@@ -1,14 +1,27 @@
 'use strict';
+var update = require('./lib/update');
 
-/**
- * txn
- * insert
- *   201
- *   409 → get → 500 → get
- *             → 200 (patch obj)  → goto txn
- *   500 → goto insert
- *
- */
+function backoff() {
+    return 300;
+}
+
+function makeRetry(ctx) {
+    return function retry(fn) {
+        var err;
+        ctx.retryLeft--;
+        if (ctx.retryLeft < 0) {
+            return;
+        }
+        if (!ctx.retryLeft) {
+            err = new Error('too many errors');
+            err.errList = ctx.allErrors;
+            return ctx.callback(err);
+        }
+        setTimeout(function () {
+            fn(ctx);
+        }, ctx.options.backoff(ctx.options.maxRetries - ctx.retryLeft));
+    };
+}
 
 function once(fn) {
     var called = false;
@@ -21,8 +34,11 @@ function once(fn) {
     };
 }
 
-function backoff() {
-    return 300;
+function Ctx(obj, callback) {
+    this.allErrors = [];
+    this.retry = makeRetry(this);
+    this.callback = once(callback);
+    this.obj = obj;
 }
 
 function transaction(couchdb, op, options) {
@@ -30,64 +46,14 @@ function transaction(couchdb, op, options) {
     options.maxRetries = options.maxRetries || 5;
     options.backoff = options.backoff || backoff;
     return function (obj, callback) {
-        var retryLeft = options.maxRetries;
-        var allErrors = [];
-        callback = once(callback);
 
-        function retry(fn) {
-            var err;
-            retryLeft--;
-            if (retryLeft < 1) {
-                err = new Error('too many errors');
-                err.errList = allErrors;
-                return callback(err);
-            }
-            setTimeout(function () {
-                fn();
-            }, options.backoff(options.maxRetries - retryLeft));
-        }
+        var ctx = new Ctx(obj, callback);
+        ctx.retryLeft = options.maxRetries;
+        ctx.op = op;
+        ctx.couchdb = couchdb;
+        ctx.options = options;
 
-        function handleSuccess(result) {
-            obj._rev = result.rev;
-            obj._id = result.id;
-            return callback(null, obj);
-        }
-
-        function handleConflict() {
-            couchdb.get(obj._id, function (err, currentObj) {
-                if (err) {
-                    allErrors.push(err);
-                    return retry(handleConflict);
-                }
-                obj = currentObj;
-                update();
-            });
-        }
-
-        function store() {
-            couchdb.insert(obj, function (err, result) {
-                if (err && err.statusCode && err.statusCode === 409) {
-                    handleConflict();
-                }
-                if (err) {
-                    allErrors.push(err);
-                    return retry(store);
-                }
-                handleSuccess(result);
-            });
-        }
-
-        function update() {
-            op(obj, function (err, nObj) {
-                if (err) {
-                    allErrors.push(err);
-                    return retry(update);
-                }
-		obj=nObj;
-                store();
-            });
-        };
-        update();
-    }
+        update(ctx);
+    };
 }
 exports = module.exports = transaction;

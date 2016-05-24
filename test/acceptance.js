@@ -1,7 +1,8 @@
 'use strict';
 
-var tran = require('..'),
+var transactions = require('..'),
     http = require('http'),
+    api,
     crypto = require('crypto'),
     assert = require('assert'),
     nano = require('nano');
@@ -31,8 +32,8 @@ function POSTHandleCreate(req, res) {
 
 function POSTHandleUpdate(req, res) {
     var newRevV = +req.db[req.obj._id]._rev.split('-')[0];
-    newRevV++;
     var upToDate = req.db[req.obj._id] = req.obj;
+    newRevV++;
     upToDate._rev = newRevV + '-' + req.objSignature;
     res.writeHead(201, {
         'Content-Type': 'text/plain',
@@ -49,8 +50,8 @@ function POSTHandleUpdate(req, res) {
 function POSTHandleConflict(req, res) {
     res.writeHead(409);
     return res.end(JSON.stringify({
-        "error": "conflict",
-        "reason": "Document update conflict."
+        'error': 'conflict',
+        'reason': 'Document update conflict.'
     }));
 }
 
@@ -60,7 +61,7 @@ function POST(req, res) {
     req.on('data', function (chunk) {
         if (chunk) {
             buffer += chunk.toString();
-        };
+        }
     });
     req.on('end', function () {
         var obj = JSON.parse(buffer);
@@ -81,7 +82,7 @@ function POST(req, res) {
 function GET(req, res) {
     res.end(JSON.stringify(req.db['1']));
 }
-var api = {
+api = {
     POST: POST,
     GET: GET
 };
@@ -93,9 +94,6 @@ describe('couchdb-transactions', function () {
             api[req.method](req, res);
         };
     })());
-    server.on('rev', function (rev) {
-        revisions.push(rev);
-    });
 
     function op(doc, cb) {
         doc.number = doc.number || 0;
@@ -105,12 +103,12 @@ describe('couchdb-transactions', function () {
 
     before(function (done) {
         server.listen(function (err) {
-            var db = nano('http://localhost:' + this.address().port + '/test');
+            var t, _done, db = nano('http://localhost:' + this.address().port + '/test');
             if (err) {
                 return done(err);
             }
-            var t = tran(db, op);
-            var _done = (function () {
+            t = transactions(db, op);
+            _done = (function () {
                 var left = 3;
                 return function () {
                     left--;
@@ -132,7 +130,7 @@ describe('couchdb-transactions', function () {
         });
     });
 
-    it('should', function () {
+    it('should apply all updates', function () {
         assert.deepEqual(db['1'], {
             _id: '1',
             number: 3,

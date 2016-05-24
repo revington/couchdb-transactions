@@ -1,15 +1,32 @@
 {
-  "name": "txn2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "mocha": "^2.4.5",
-    "nano": "^6.2.0"
-  }
+    "name": "couchdb-transactions",
+    "version": "1.0.0",
+    "description": "Couchdb all or nothing transactions without deps",
+    "main": "index.js",
+    "scripts": {
+        "test": "istanbul cover node_modules/mocha/bin/_mocha -- --bail --check-leaks test"
+    },
+    "author": "Pedro Narciso García Revington <p.revington@gmail.com>",
+    "license": "MIT",
+    "devDependencies": {
+        "istanbul": "^0.4.3",
+        "mocha": "^2.4.5",
+        "nano": "^6.2.0"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "dependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/revington/couchdb-transactions.git"
+    },
+    "keywords": [
+        "couchdb",
+        "transactions"
+    ],
+    "bugs": {
+        "url": "https://github.com/revington/couchdb-transactions/issues"
+    },
+    "homepage": "https://github.com/revington/couchdb-transactions#readme"
 }
