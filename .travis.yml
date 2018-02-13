@@ -1,7 +1,12 @@
 ---
 language: node_js
 node_js:
-- '0.10'
-- '4'
-- 'node'
+- "6.12"
+- "7.10"
+- "8.9"
+- node
+services:
+- couchdb
 sudo: false
+script:
+- "npm run test-ci"
