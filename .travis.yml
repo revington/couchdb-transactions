@@ -1,6 +1,9 @@
 ---
 language: node_js
 node_js:
+- "6.12"
+- "7.10"
+- "8.9"
 - node
 services:
 - couchdb
