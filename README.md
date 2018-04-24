@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/revington/couchdb-transactions.svg?branch=master)](https://travis-ci.org/revington/couchdb-transactions)
+[![Known Vulnerabilities](https://snyk.io/test/github/revington/couchdb-transactions/badge.svg?targetFile=package.json)](https://snyk.io/test/github/revington/couchdb-transactions?targetFile=package.json)
 [![Coverage Status](https://coveralls.io/repos/github/revington/couchdb-transactions/badge.svg?branch=master)](https://coveralls.io/github/revington/couchdb-transactions?branch=master)
 # Couchdb transactions
 
