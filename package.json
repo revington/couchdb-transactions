@@ -12,13 +12,14 @@
     "devDependencies": {
         "coveralls": "^3.0.0",
         "istanbul": "^0.4.3",
-        "mocha": "^2.4.5",
-        "nano": "^6.2.0"
+        "nano": "^8.1.0"
     },
     "directories": {
         "test": "test"
     },
-    "dependencies": {},
+    "dependencies": {
+        "mocha": "^6.2.0"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/revington/couchdb-transactions.git"
