@@ -1,35 +1,39 @@
 {
-    "name": "couchdb-transactions",
-    "version": "2.0.1",
-    "description": "Couchdb all or nothing transactions without deps",
-    "main": "index.js",
-    "scripts": {
-        "test": "istanbul cover node_modules/mocha/bin/_mocha -- --bail --check-leaks test",
-        "test-ci": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
-    },
-    "author": "Pedro Narciso García Revington <p.revington@gmail.com>",
-    "license": "MIT",
-    "devDependencies": {
-        "coveralls": "^3.0.0",
-        "istanbul": "^0.4.3",
-        "nano": "^8.1.0"
-    },
-    "directories": {
-        "test": "test"
-    },
-    "dependencies": {
-        "mocha": "^6.2.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/revington/couchdb-transactions.git"
-    },
-    "keywords": [
-        "couchdb",
-        "transactions"
-    ],
-    "bugs": {
-        "url": "https://github.com/revington/couchdb-transactions/issues"
-    },
-    "homepage": "https://github.com/revington/couchdb-transactions#readme"
+  "name": "couchdb-transactions",
+  "version": "2.0.1",
+  "description": "Couchdb all or nothing transactions without deps",
+  "main": "index.js",
+  "scripts": {
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- --bail --check-leaks test",
+    "test-ci": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "author": "Pedro Narciso García Revington <p.revington@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "istanbul": "^0.4.3",
+    "nano": "^8.1.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "mocha": "^6.2.0",
+    "snyk": "^1.316.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revington/couchdb-transactions.git"
+  },
+  "keywords": [
+    "couchdb",
+    "transactions"
+  ],
+  "bugs": {
+    "url": "https://github.com/revington/couchdb-transactions/issues"
+  },
+  "homepage": "https://github.com/revington/couchdb-transactions#readme",
+  "snyk": true
 }
